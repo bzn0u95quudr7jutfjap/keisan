@@ -8,6 +8,16 @@
 
 #define count(a) (sizeof(a) / sizeof(typeof(a[0])))
 
+typedef struct cartesiane cartesiane;
+struct cartesiane {
+  double r;
+  double i;
+};
+
+cartesiane formula(cartesiane cc){
+  return cc;
+}
+
 typedef struct polari polari;
 struct polari {
   double raggio;
@@ -47,17 +57,18 @@ void inputcolor(SDL_Renderer *r, int32_t x, int32_t y) {
   int t = (p.theta * (count(colors)) / 2) / M_PI + (y < 0 ? 6 : 0);
   SDL_Color *c = &(colors[t]);
 
-  SDL_SetRenderDrawColor(r, 255, 255, 255, 255);
   SDL_SetRenderDrawColor(r, m * c->r, m * c->g, m * c->b, 255);
   SDL_RenderDrawPoint(r, x + 240, y + 240);
 }
 
 void outputcolor(SDL_Renderer *r, int32_t x, int32_t y) {
+  cartesiane cc = {.r = x, .i = y};
+  cc = formula(cc);
+  polari p = fromCartesiane(cc.r, cc.i);
+  double m = p.raggio / 256;
+  int t = (p.theta * (count(colors)) / 2) / M_PI + (y < 0 ? 6 : 0);
+  SDL_Color *c = &(colors[t]);
 
-  int m = 1;
-  SDL_Color *c = &(colors[0]);
-
-  SDL_SetRenderDrawColor(r, 255, 255, 255, 255);
   SDL_SetRenderDrawColor(r, m * c->r, m * c->g, m * c->b, 255);
   SDL_RenderDrawPoint(r, x + 240 + 482, y + 240);
 }
