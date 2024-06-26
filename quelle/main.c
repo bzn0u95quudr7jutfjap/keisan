@@ -14,14 +14,15 @@ struct ci64 {
 
 typedef struct polari polari;
 struct polari {
-  double r;
-  double t;
+  double raggio;
+  double theta;
 };
 
 polari fromCartesiane(int x, int y) {
+  double t = atan2(y, (x != 0 ? x : 0.1));
   polari a = {
-      .r = sqrt(x * x + y * y),
-      .t = (x == 0 ? 0 : atan2(y, x)) + (y < 0 ? M_PI : 0),
+      .raggio = sqrt(x * x + y * y),
+      .theta = t + (0 <= t ? 0 : M_PI),
   };
   return a;
 }
@@ -30,9 +31,9 @@ polari fromCartesiane(int x, int y) {
 
 void inputcolor(SDL_Renderer *r, int32_t x, int32_t y) {
   double m = sqrt(x * x + y * y) / 256;
-  double tn = atan2(y,(x != 0 ? x : 0.1));
-  double tna12 = ((0 <= tn ? tn : tn + (M_PI)) * A / 2) / (M_PI);
-  int t = tna12 + (y < 0 ? 6 : 0);
+  double tn = atan2(y, (x != 0 ? x : 0.1));
+  double tna12 = tn + (0 <= tn ? 0 : M_PI);
+  int t = (tna12 * A / 2) / (M_PI) + (y < 0 ? 6 : 0);
   // fprintf(stdout,
   //         "x = %3d, "
   //         "y = %3d, "
@@ -44,10 +45,9 @@ void inputcolor(SDL_Renderer *r, int32_t x, int32_t y) {
   //         "t = %d \n",
   //         x, y, a, m, tna, tna12, tna12pi, t);
   polari p = fromCartesiane(x, y);
-  double m1 = p.r / 256;
-  int t1 = (p.r * A) / M_PI;
-  fprintf(stdout, "%d %d\n",(m1 == m), t1 == t);
-
+  double m1 = p.raggio / 256;
+  int t1 = (p.theta * A / 2) / M_PI + (y < 0 ? 6 : 0);
+  fprintf(stdout, "%d %f %f\n", (m1 == m), tna12, p.theta);
 
   SDL_Color colors[A] = {
       {.r = 255, .g = 000, .b = 000}, // red
@@ -87,7 +87,7 @@ void inputcolor(SDL_Renderer *r, int32_t x, int32_t y) {
   SDL_RenderDrawPoint(r, x + 240, y + 240);
 }
 
-void die(int sig){ exit(1); }
+void die(int sig) { exit(1); }
 int main(int argc, const char **argv) {
 
   signal(SIGINT, die);
