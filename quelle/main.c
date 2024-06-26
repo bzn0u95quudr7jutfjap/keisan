@@ -30,11 +30,8 @@ polari fromCartesiane(int x, int y) {
 
 void inputcolor(SDL_Renderer *r, int32_t x, int32_t y) {
   double m = sqrt(x * x + y * y) / 256;
-  double a = y / (x != 0 ? x : 0.1);
-  double tn = atan(a);
-  double tna = tn >= 0 ? tn : tn + (M_PI);
-  double tna12 = (tna * A / 2) / (M_PI);
-  double tna12pi = tna12 / (M_PI);
+  double tn = atan2(y,(x != 0 ? x : 0.1));
+  double tna12 = ((0 <= tn ? tn : tn + (M_PI)) * A / 2) / (M_PI);
   int t = tna12 + (y < 0 ? 6 : 0);
   // fprintf(stdout,
   //         "x = %3d, "
