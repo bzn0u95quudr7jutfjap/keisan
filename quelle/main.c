@@ -35,7 +35,7 @@ void inputcolor(SDL_Renderer *r, int32_t x, int32_t y) {
   double tna = tn >= 0 ? tn : tn + (M_PI);
   double tna12 = (tna * A / 2) / (M_PI);
   double tna12pi = tna12 / (M_PI);
-  int t = tna12;
+  int t = tna12 + (y < 0 ? 6 : 0);
   // fprintf(stdout,
   //         "x = %3d, "
   //         "y = %3d, "
@@ -83,7 +83,7 @@ void inputcolor(SDL_Renderer *r, int32_t x, int32_t y) {
       {.r = 255, .g = 000, .b = 255}, // magenta
       {.r = 255, .g = 000, .b = 128}, // rosa
   };
-  SDL_Color c = colors[t + (y < 0 ? 6 : 0)];
+  SDL_Color c = colors[t];
 
   SDL_SetRenderDrawColor(r, 255, 255, 255, 255);
   SDL_SetRenderDrawColor(r, m * c.r, m * c.g, m * c.b, 255);
