@@ -1,5 +1,5 @@
+#include <SDL2/SDL_render.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <SDL2/SDL.h>
 
 typedef struct ci64 ci64;
@@ -22,6 +22,7 @@ int main(int argc, const char **argv) {
   SDL_SetRenderDrawColor(renderer,0,0,0,255);
 	SDL_RenderClear(renderer);
 	SDL_SetRenderDrawColor(renderer,255,255,255,255);
+  SDL_RenderDrawPoint(renderer, 0, 0);
 	SDL_RenderPresent(renderer);
 	SDL_Delay(1024 + 512);
 	SDL_Quit();
