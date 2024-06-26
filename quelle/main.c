@@ -51,9 +51,11 @@ void inputcolor(SDL_Renderer *r, int32_t x, int32_t y) {
   SDL_SetRenderDrawColor(r, 255, 255, 255, 255);
   SDL_SetRenderDrawColor(r, m * c->r, m * c->g, m * c->b, 255);
   SDL_RenderDrawPoint(r, x + 240, y + 240);
+
 }
 
 void die(int sig) { exit(1); }
+
 int main(int argc, const char **argv) {
 
   signal(SIGINT, die);
@@ -83,3 +85,4 @@ int main(int argc, const char **argv) {
 
   return 0;
 }
+
