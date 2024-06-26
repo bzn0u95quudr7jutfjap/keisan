@@ -2,6 +2,7 @@
 #include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_render.h>
 #include <math.h>
+#include <signal.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -11,6 +12,20 @@ struct ci64 {
   int64_t i;
 };
 
+typedef struct polari polari;
+struct polari {
+  double r;
+  double t;
+};
+
+polari fromCartesiane(int x, int y) {
+  polari a = {
+      .r = sqrt(x * x + y * y),
+      .t = (x == 0 ? 0 : atan2(y, x)) + (y < 0 ? M_PI : 0),
+  };
+  return a;
+}
+
 #define A 12
 
 void inputcolor(SDL_Renderer *r, int32_t x, int32_t y) {
@@ -18,19 +33,24 @@ void inputcolor(SDL_Renderer *r, int32_t x, int32_t y) {
   double a = y / (x != 0 ? x : 0.1);
   double tn = atan(a);
   double tna = tn >= 0 ? tn : tn + (M_PI);
-  double tna12 = (tna * A/2) / (M_PI);
+  double tna12 = (tna * A / 2) / (M_PI);
   double tna12pi = tna12 / (M_PI);
   int t = tna12;
-  fprintf(stdout,
-          "x = %3d, "
-          "y = %3d, "
-          "a = %3f, "
-          "r = %3f, "
-          "t = %3f, "
-          "t12 = %f, "
-          "t12pi = %f, "
-          "t = %d \n",
-          x, y, a, m, tna, tna12, tna12pi, t);
+  // fprintf(stdout,
+  //         "x = %3d, "
+  //         "y = %3d, "
+  //         "a = %3f, "
+  //         "r = %3f, "
+  //         "t = %3f, "
+  //         "t12 = %f, "
+  //         "t12pi = %f, "
+  //         "t = %d \n",
+  //         x, y, a, m, tna, tna12, tna12pi, t);
+  polari p = fromCartesiane(x, y);
+  double m1 = p.r / 256;
+  int t1 = (p.r * A) / M_PI;
+  fprintf(stdout, "%d %d\n",(m1 == m), t1 == t);
+
 
   SDL_Color colors[A] = {
       {.r = 255, .g = 000, .b = 000}, // red
@@ -47,7 +67,7 @@ void inputcolor(SDL_Renderer *r, int32_t x, int32_t y) {
       //{.r = 0, .g = 0, .b = 0}, // padding
       //{.r = 0, .g = 0, .b = 0}, // padding
       //{.r = 0, .g = 0, .b = 0}, // padding
-    
+
       //{.r = 0, .g = 0, .b = 0}, // padding
       //{.r = 0, .g = 0, .b = 0}, // padding
       //{.r = 0, .g = 0, .b = 0}, // padding
@@ -70,7 +90,10 @@ void inputcolor(SDL_Renderer *r, int32_t x, int32_t y) {
   SDL_RenderDrawPoint(r, x + 240, y + 240);
 }
 
+void die(int sig){ exit(1); }
 int main(int argc, const char **argv) {
+
+  signal(SIGINT, die);
 
   uint64_t width = 481 * 2 + 1;
   uint64_t height = 481;
