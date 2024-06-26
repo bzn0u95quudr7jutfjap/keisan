@@ -15,7 +15,11 @@ struct cartesiane {
 };
 
 cartesiane formula(cartesiane cc){
-  return cc;
+  cartesiane ret = {
+    .r = 1 + cc.r * cc.r - cc.i * cc.i,
+    .i = 2 * cc.r * cc.i,
+  };
+  return ret;
 }
 
 typedef struct polari polari;
