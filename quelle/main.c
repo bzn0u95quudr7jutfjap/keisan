@@ -6,11 +6,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-typedef struct ci64 ci64;
-struct ci64 {
-  int64_t r;
-  int64_t i;
-};
+#define count(a) (sizeof(a) / sizeof(typeof(a[0])))
 
 typedef struct polari polari;
 struct polari {
@@ -27,29 +23,9 @@ polari fromCartesiane(int x, int y) {
   return a;
 }
 
-#define A 12
-
 void inputcolor(SDL_Renderer *r, int32_t x, int32_t y) {
-  double m = sqrt(x * x + y * y) / 256;
-  double tn = atan2(y, (x != 0 ? x : 0.1));
-  double tna12 = tn + (0 <= tn ? 0 : M_PI);
-  int t = (tna12 * A / 2) / (M_PI) + (y < 0 ? 6 : 0);
-  // fprintf(stdout,
-  //         "x = %3d, "
-  //         "y = %3d, "
-  //         "a = %3f, "
-  //         "r = %3f, "
-  //         "t = %3f, "
-  //         "t12 = %f, "
-  //         "t12pi = %f, "
-  //         "t = %d \n",
-  //         x, y, a, m, tna, tna12, tna12pi, t);
-  polari p = fromCartesiane(x, y);
-  double m1 = p.raggio / 256;
-  int t1 = (p.theta * A / 2) / M_PI + (y < 0 ? 6 : 0);
-  fprintf(stdout, "%d %f %f\n", (m1 == m), tna12, p.theta);
 
-  SDL_Color colors[A] = {
+  SDL_Color colors[] = {
       {.r = 255, .g = 000, .b = 000}, // red
       {.r = 255, .g = 128, .b = 000}, // orange
       {.r = 255, .g = 255, .b = 000}, // yellow
@@ -57,20 +33,6 @@ void inputcolor(SDL_Renderer *r, int32_t x, int32_t y) {
       {.r = 128, .g = 255, .b = 000}, // chartette
       {.r = 000, .g = 255, .b = 000}, // green
       {.r = 000, .g = 255, .b = 128}, // spring green
-
-      //{.r = 0, .g = 0, .b = 0}, // padding
-      //{.r = 0, .g = 0, .b = 0}, // padding
-      //{.r = 0, .g = 0, .b = 0}, // padding
-      //{.r = 0, .g = 0, .b = 0}, // padding
-      //{.r = 0, .g = 0, .b = 0}, // padding
-      //{.r = 0, .g = 0, .b = 0}, // padding
-
-      //{.r = 0, .g = 0, .b = 0}, // padding
-      //{.r = 0, .g = 0, .b = 0}, // padding
-      //{.r = 0, .g = 0, .b = 0}, // padding
-      //{.r = 0, .g = 0, .b = 0}, // padding
-      //{.r = 0, .g = 0, .b = 0}, // padding
-      //{.r = 0, .g = 0, .b = 0}, // padding
 
       {.r = 000, .g = 255, .b = 255}, // cyan
       {.r = 000, .g = 128, .b = 255}, // azure
@@ -80,10 +42,14 @@ void inputcolor(SDL_Renderer *r, int32_t x, int32_t y) {
       {.r = 255, .g = 000, .b = 255}, // magenta
       {.r = 255, .g = 000, .b = 128}, // rosa
   };
-  SDL_Color c = colors[t];
+
+  polari p = fromCartesiane(x, y);
+  double m = p.raggio / 256;
+  int t = (p.theta * (count(colors)) / 2) / M_PI + (y < 0 ? 6 : 0);
+  SDL_Color *c = &(colors[t]);
 
   SDL_SetRenderDrawColor(r, 255, 255, 255, 255);
-  SDL_SetRenderDrawColor(r, m * c.r, m * c.g, m * c.b, 255);
+  SDL_SetRenderDrawColor(r, m * c->r, m * c->g, m * c->b, 255);
   SDL_RenderDrawPoint(r, x + 240, y + 240);
 }
 
